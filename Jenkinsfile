@@ -27,6 +27,13 @@ pipeline {
             }
         }
 
+        stage('Run Tests') {
+            steps {
+                // Usa PYTHONPATH para que o pytest encontre o pacote `app`
+                sh "docker exec ${CONTAINER_NAME} sh -c 'PYTHONPATH=. pytest tests/'"
+            }
+        }
+
         stage('Testar API (exemplo)') {
             steps {
                 sh 'curl -s http://localhost:5000 || echo "API não respondeu"'
