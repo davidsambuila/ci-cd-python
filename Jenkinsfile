@@ -20,16 +20,24 @@ pipeline {
             }
         }
 
-        stage('Subir com Docker Compose') {
+        stage('Rodar container Docker') {
             steps {
-                sh 'docker-compose down || true'
-                sh 'docker-compose up -d --build'
+                script {
+                    sh "docker run -d --name ci-cd-python-container -p 5000:5000 ${DOCKER_IMAGE}"
+                }
             }
         }
 
         stage('Testar API (exemplo)') {
             steps {
                 sh 'curl -s http://localhost:5000 || echo "API não respondeu"'
+            }
+        }
+
+        stage('Parar container') {
+            steps {
+                sh 'docker stop ci-cd-python-container || true'
+                sh 'docker rm ci-cd-python-container || true'
             }
         }
     }
