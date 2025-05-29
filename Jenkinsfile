@@ -3,13 +3,12 @@ pipeline {
 
     environment {
         DOCKER_IMAGE = "ci-cd-python-app"
-        CONTAINER_NAME = "ci-cd-python-container"
     }
 
     stages {
         stage('Clonar código') {
             steps {
-                git branch: 'main', url: 'https://github.com/davidsambuila/ci-cd-python.git'
+                git 'https://github.com/davidsambuila/ci-cd-python.git'
             }
         }
 
@@ -21,18 +20,10 @@ pipeline {
             }
         }
 
-        stage('Parar e remover container existente') {
+        stage('Subir com Docker Compose') {
             steps {
-                sh """
-                    docker stop ${CONTAINER_NAME} || true
-                    docker rm ${CONTAINER_NAME} || true
-                """
-            }
-        }
-
-        stage('Rodar container Docker') {
-            steps {
-                sh "docker run -d --name ${CONTAINER_NAME} -p 5000:5000 ${DOCKER_IMAGE}"
+                sh 'docker-compose down || true'
+                sh 'docker-compose up -d --build'
             }
         }
 
