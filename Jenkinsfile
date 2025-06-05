@@ -20,11 +20,7 @@ pipeline {
             }
         }
 
-        stage('Subir com Docker Compose') {
-            steps {
-                sh 'docker-compose down || true'
-                sh 'docker-compose up -d --build'
-            }
+
         }
 
         stage('Run Tests') {
